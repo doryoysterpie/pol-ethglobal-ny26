@@ -62,8 +62,8 @@ true by construction.
 ## 4. What we built at ETHGlobal NY
 
 - Replaced a mock master-secret KMS with **real Shamir M-of-N** custody.
-- Built and verified the **Google Cloud HSM adapter** against a real HSM-protected
-  key (see §7).
+- Built the **Google Cloud HSM adapter** (RSA-OAEP share-wrapping) and verified the
+  HSM integration path against a real HSM-protected key (see §7).
 - Wired the full **crypto-shred ceremony** end-to-end with threshold enforcement
   (2-of-5 denied, 3-of-5 approved) and a proof that retained state cannot recover a
   shredded record — even for an operator holding the master secret.
@@ -135,16 +135,20 @@ See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the full walkthrough.
 
 ## 7. Bounty target and rationale
 
-**Google Cloud — exclusively.** The trust model needs a hardware boundary that an
+**Google Cloud — exclusively.** The trust model needs a hardware boundary an
 institution can hold *without* trusting the operator's servers. Google Cloud HSM
-provides exactly that: a key whose private material never leaves the HSM's
-protection level, accessed through Cloud KMS. The `GcpHsmAdapter` integrates Cloud
-KMS directly, and the integration was verified against a real HSM-protected
-**secp256k1** key in `northamerica-northeast1`.
+provides exactly that: a key whose private material never leaves the HSM's protection
+level, accessed through Cloud KMS. The `GcpHsmAdapter` wraps the institutional share
+with an **RSA-3072 OAEP** HSM key — encrypting client-side with the key's public half
+and unwrapping only inside the HSM via `asymmetricDecrypt`, so the operator can hand a
+wrapped share to the institution but only the HSM can recover it. The wrapping key was
+provisioned at HSM protection level in `northamerica-northeast1` and verified with an
+end-to-end encrypt → HSM-decrypt roundtrip.
 
-> Google Cloud HSM does not support Ed25519 at HSM protection level, so the
-> HSM-backed share uses secp256k1 (also Ethereum's signing curve). This is scoped
-> to the demonstration; the production signature scheme is governed separately.
+> Note on algorithms: Google Cloud HSM does not support Ed25519 at HSM protection
+> level. Share-wrapping uses RSA-OAEP (the adapter's path here); where a hardware
+> *signing* key is needed, secp256k1 is the HSM-supported curve (also Ethereum's).
+> These are demonstration-scoped choices; the production scheme is governed separately.
 
 ## 8. Team
 
