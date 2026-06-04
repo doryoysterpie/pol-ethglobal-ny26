@@ -1,0 +1,14 @@
+# Foundry config for the Besu contracts.
+# Dependency-free by design (no forge-std) — keeps a zero-dep posture; tests use a
+# minimal inline Vm cheatcode interface.
+[profile.default]
+src = "src"
+out = "out"
+test = "test"
+libs = ["lib"]
+optimizer = true
+optimizer_runs = 200
+# Match the Besu chain fork (genesis enables berlin/london). Solc's default EVM emits PUSH0
+# (Shanghai+), which a London-configured Besu rejects with INVALID_OPERATION. If the chain
+# is later moved to Shanghai/Cancun (genesis *Time fields), bump this in lockstep.
+evm_version = "london"

@@ -1,0 +1,14 @@
+# Foundry build artifacts
+out/
+cache/
+broadcast/
+
+# Besu operator output (generated validator keys + authoritative genesis — NEVER commit keys)
+networkfiles/
+
+# Local dev-network generated state (node keys, bootnode enode) — NEVER commit
+local/data/
+local/.env
+
+# Local on-chain tooling dependencies (ethers, etc.) — not part of the zero-dep core
+local/node_modules/

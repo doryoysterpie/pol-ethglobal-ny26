@@ -1,0 +1,21 @@
+{
+  "name": "pol-ethglobal-ny26",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "ETHGlobal New York 2026 hackathon submission — a demonstration of threshold custody, crypto-shred, and dual-anchored audit logging for education records, with a Google Cloud HSM-backed institutional key share.",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "demo": "node tests/test_pipeline.mjs",
+    "test": "node tests/test_shamirs_hello_world.mjs && node tests/test_hsm_adapter.mjs && node tests/test_pipeline.mjs",
+    "test:shamir": "node tests/test_shamirs_hello_world.mjs",
+    "test:hsm": "node tests/test_hsm_adapter.mjs",
+    "test:ceremony": "node tests/test_pipeline.mjs"
+  },
+  "dependencies": {
+    "shamirs-secret-sharing": "^2.0.1"
+  }
+}

@@ -1,0 +1,36 @@
+# Secrets — never commit
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets/
+**/private/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+
+# Foundry build artifacts
+contracts/besu/out/
+contracts/besu/cache/
+
+# Besu local rig runtime artifacts (keys + genesis are generated at runtime)
+contracts/besu/local/networkfiles/
+contracts/besu/local/data/
+contracts/besu/local/.env
+
+# Demo runtime artifacts
+.demo-*
+.tier2/
+.anchor-*.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log

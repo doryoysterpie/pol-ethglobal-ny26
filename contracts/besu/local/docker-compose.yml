@@ -1,0 +1,87 @@
+# LOCAL 3-node IBFT 2.0 Besu network — development convenience + CI integration target.
+# A throwaway local-only network (distinct chainId 0x504F4C4C, local-only keys, throwaway dev account).
+# Static IPs because besu --bootnodes requires an IP in the enode, not a hostname.
+# Bring up with ./up.sh (generates keys + genesis + .env first). Tear down with ./down.sh.
+networks:
+  besunet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+services:
+  besu1:                                   # bootnode @ 172.28.0.11; RPC on host :8545
+    image: hyperledger/besu:24.12.2
+    command:
+      - --data-path=/opt/besu/data
+      - --genesis-file=/opt/besu/genesis.json
+      - --node-private-key-file=/opt/besu/data/key
+      - --rpc-http-enabled
+      - --rpc-http-host=0.0.0.0
+      - --rpc-http-port=8545
+      - --rpc-http-api=ETH,NET,WEB3,IBFT
+      - --host-allowlist=*
+      - --rpc-http-cors-origins=*
+      - --min-gas-price=0
+      - --p2p-port=30303
+      - --p2p-host=172.28.0.11
+    environment: [ "BESU_OPTS=-Xmx1536m" ]
+    mem_limit: 2g
+    volumes:
+      - ./networkfiles/genesis.json:/opt/besu/genesis.json:ro
+      - ./data/node1:/opt/besu/data
+    ports: [ "8545:8545" ]
+    networks:
+      besunet:
+        ipv4_address: 172.28.0.11
+  besu2:
+    image: hyperledger/besu:24.12.2
+    command:
+      - --data-path=/opt/besu/data
+      - --genesis-file=/opt/besu/genesis.json
+      - --node-private-key-file=/opt/besu/data/key
+      - --rpc-http-enabled
+      - --rpc-http-host=0.0.0.0
+      - --rpc-http-port=8545
+      - --rpc-http-api=ETH,NET,WEB3,IBFT
+      - --host-allowlist=*
+      - --rpc-http-cors-origins=*
+      - --min-gas-price=0
+      - --p2p-port=30303
+      - --p2p-host=172.28.0.12
+      - --bootnodes=${BOOTNODE_ENODE}
+    environment: [ "BESU_OPTS=-Xmx1536m" ]
+    mem_limit: 2g
+    volumes:
+      - ./networkfiles/genesis.json:/opt/besu/genesis.json:ro
+      - ./data/node2:/opt/besu/data
+    ports: [ "8546:8545" ]
+    networks:
+      besunet:
+        ipv4_address: 172.28.0.12
+    depends_on: [ besu1 ]
+  besu3:
+    image: hyperledger/besu:24.12.2
+    command:
+      - --data-path=/opt/besu/data
+      - --genesis-file=/opt/besu/genesis.json
+      - --node-private-key-file=/opt/besu/data/key
+      - --rpc-http-enabled
+      - --rpc-http-host=0.0.0.0
+      - --rpc-http-port=8545
+      - --rpc-http-api=ETH,NET,WEB3,IBFT
+      - --host-allowlist=*
+      - --rpc-http-cors-origins=*
+      - --min-gas-price=0
+      - --p2p-port=30303
+      - --p2p-host=172.28.0.13
+      - --bootnodes=${BOOTNODE_ENODE}
+    environment: [ "BESU_OPTS=-Xmx1536m" ]
+    mem_limit: 2g
+    volumes:
+      - ./networkfiles/genesis.json:/opt/besu/genesis.json:ro
+      - ./data/node3:/opt/besu/data
+    ports: [ "8547:8545" ]
+    networks:
+      besunet:
+        ipv4_address: 172.28.0.13
+    depends_on: [ besu1 ]

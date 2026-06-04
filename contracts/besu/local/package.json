@@ -1,0 +1,13 @@
+{
+  "name": "pol-besu-local-tools",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Local Besu-rig tooling for PoL-NA (on-chain integration scripts). NOT part of the zero-dep core; uses ethers to talk to the local dev-net. Local-only, never DO/production.",
+  "scripts": {
+    "anchor:onchain": "node onchain_anchor.mjs"
+  },
+  "dependencies": {
+    "ethers": "^6.13.0"
+  }
+}
