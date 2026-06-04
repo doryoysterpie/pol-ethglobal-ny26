@@ -1,0 +1,64 @@
+<svg width="100%" viewBox="0 0 680 540" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>PoL hackathon threshold custody flow</title>
+<desc>End-to-end demonstration scope: encrypt a record, split the key 3-of-4 with Shamir, distribute shares including one to GCP Cloud HSM, reconstruct on quorum cooperation, audit log every operation, dual-anchor the audit trail.</desc>
+
+<defs>
+<style>
+.th{font:500 14px system-ui,sans-serif;fill:#1a1a1a}
+.ts{font:12px system-ui,sans-serif;fill:#444}
+.c-teal{fill:#E1F5EE;stroke:#0F6E56}
+.c-amber{fill:#FAEEDA;stroke:#854F0B}
+.c-purple{fill:#EEEDFE;stroke:#3C3489}
+.c-gray{fill:#F1EFE8;stroke:#5F5E5A}
+.c-coral{fill:#FAECE7;stroke:#712B13}
+.c-blue{fill:#E6F1FB;stroke:#0C447C}
+.arr{fill:none;stroke:#444;stroke-width:1.5}
+</style>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs>
+
+<text class="th" x="40" y="32">Hackathon scope — threshold custody ceremony</text>
+<text class="ts" x="40" y="50">Real Shamir M-of-N · GCP Cloud HSM · crypto-shred · dual-anchor audit</text>
+
+<g class="c-teal"><rect x="40" y="76" width="180" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="130" y="100" text-anchor="middle" dominant-baseline="central">Encrypted record</text>
+<text class="ts" x="130" y="118" text-anchor="middle" dominant-baseline="central">AES-256-GCM at rest</text></g>
+
+<line x1="220" y1="104" x2="280" y2="104" class="arr" marker-end="url(#arrow)"/>
+
+<g class="c-amber"><rect x="280" y="76" width="200" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="380" y="100" text-anchor="middle" dominant-baseline="central">Shamir split 3-of-4</text>
+<text class="ts" x="380" y="118" text-anchor="middle" dominant-baseline="central">shamirs-secret-sharing</text></g>
+
+<line x1="380" y1="132" x2="380" y2="172" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="380" y="160" text-anchor="middle">Distribute shares</text>
+
+<g class="c-purple"><rect x="40" y="184" width="140" height="64" rx="8" stroke-width="0.5"/>
+<text class="th" x="110" y="208" text-anchor="middle" dominant-baseline="central">LEA share</text>
+<text class="ts" x="110" y="228" text-anchor="middle" dominant-baseline="central">GCP Cloud HSM</text></g>
+
+<g class="c-gray"><rect x="200" y="184" width="140" height="64" rx="8" stroke-width="0.5"/>
+<text class="th" x="270" y="208" text-anchor="middle" dominant-baseline="central">Operator share</text>
+<text class="ts" x="270" y="228" text-anchor="middle" dominant-baseline="central">Steward role</text></g>
+
+<g class="c-gray"><rect x="360" y="184" width="140" height="64" rx="8" stroke-width="0.5"/>
+<text class="th" x="430" y="208" text-anchor="middle" dominant-baseline="central">Academic share</text>
+<text class="ts" x="430" y="228" text-anchor="middle" dominant-baseline="central">Named advisor</text></g>
+
+<g class="c-gray"><rect x="520" y="184" width="120" height="64" rx="8" stroke-width="0.5"/>
+<text class="th" x="580" y="208" text-anchor="middle" dominant-baseline="central">Parent share</text>
+<text class="ts" x="580" y="228" text-anchor="middle" dominant-baseline="central">COPPA only</text></g>
+
+<line x1="340" y1="280" x2="340" y2="320" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="340" y="308" text-anchor="middle">Quorum cooperation reconstructs key</text>
+
+<g class="c-coral"><rect x="180" y="332" width="320" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="356" text-anchor="middle" dominant-baseline="central">Reconstruct or destroy</text>
+<text class="ts" x="340" y="374" text-anchor="middle" dominant-baseline="central">Crypto-shred ceremony</text></g>
+
+<line x1="340" y1="388" x2="340" y2="428" class="arr" marker-end="url(#arrow)"/>
+
+<g class="c-blue"><rect x="100" y="440" width="480" height="64" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="464" text-anchor="middle" dominant-baseline="central">Audit log with dual-anchor commitments</text>
+<text class="ts" x="340" y="484" text-anchor="middle" dominant-baseline="central">OpenTimestamps → Bitcoin · Guardtime KSI</text></g>
+</svg>
