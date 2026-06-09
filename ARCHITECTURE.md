@@ -81,9 +81,22 @@ small interface (`IHsmAdapter`: `encryptShare` / `decryptShare`):
   boundary. It is loaded only via dynamic import when `USE_REAL_GCP_HSM=true`, so
   the offline baseline never resolves `@google-cloud/kms`.
 
-The verified Cloud HSM key is **`secp256k1` (asymmetric signing)** in
-`northamerica-northeast1`. Google Cloud HSM does not offer Ed25519 at HSM
-protection level; secp256k1 (also Ethereum's curve) is used for the demonstration.
+Two keys were provisioned at HSM protection level in `northamerica-northeast1`, both
+verified end-to-end:
+
+- **`pol-lea-share-encrypt-hsm`** — **RSA-3072 OAEP** (`rsa-decrypt-oaep-3072-sha256`,
+  asymmetric *decrypt*) — the key `GcpHsmAdapter` actually uses. KMS exposes no
+  asymmetric *encrypt* API, so `encryptShare` wraps the share **client-side** with the
+  public key and `decryptShare` unwraps it **inside the HSM** via `asymmetricDecrypt`;
+  only the private-key decrypt happens in hardware, which is exactly the custody
+  property we want.
+- **`pol-lea-share-hsm`** — **secp256k1** (`EC_SIGN_SECP256K1_SHA256`, asymmetric
+  *signing*) — verified by a sign→verify roundtrip. This is the key that established
+  that **Ed25519 is not available at HSM protection level on GCP** (rejected at create)
+  and that **secp256k1** (also Ethereum's curve) is the HSM-supported signing curve.
+
+Both are demonstration-scoped; the production signature scheme is governed separately
+(ADR-0003).
 
 ## 4. On-chain anchoring
 
