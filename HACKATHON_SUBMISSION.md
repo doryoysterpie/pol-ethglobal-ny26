@@ -22,7 +22,7 @@ requiring it to trust the operator's infrastructure with key material. The
 wraps the institutional share client-side with the key's public half and unwraps it
 inside the HSM via `asymmetricDecrypt`, so only the private-key decrypt happens in
 hardware. The integration was verified end-to-end against a real HSM-protected
-**RSA-3072 OAEP** key (`pol-lea-share-encrypt-hsm`) in `northamerica-northeast1` —
+**RSA-3072 OAEP** key —
 reproducible via `USE_REAL_GCP_HSM=true npm run test:hsm:live`, with a committed
 transcript at [`docs/evidence/hsm-live-verification-2026-06-12.txt`](./docs/evidence/hsm-live-verification-2026-06-12.txt).
 We are not pursuing other bounties.
@@ -80,7 +80,9 @@ See [`ARCHITECTURE.md`](./ARCHITECTURE.md) and the diagram in the repository roo
 
 ## Team
 
-- _Add team member names / roles / handles here before submission._
+Solo build. Founder — a leadership executive with 15+ years in advertising and
+consulting, a dev3pack Fellow, and a published researcher (_"Is the World Ready for a
+Cryptocurrency Standard?"_), with additional background in cybersecurity.
 
 ## License
 

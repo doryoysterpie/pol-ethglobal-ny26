@@ -9,8 +9,8 @@
 // Run it:
 //   npm install @google-cloud/kms
 //   USE_REAL_GCP_HSM=true \
-//   GCP_PROJECT_ID=pol-attest-hackathon GCP_LOCATION_ID=northamerica-northeast1 \
-//   GCP_KEY_RING_ID=pol-attest-keyring GCP_CRYPTO_KEY_ID=pol-lea-share-encrypt-hsm \
+//   GCP_PROJECT_ID=<your-project> GCP_LOCATION_ID=<your-region> \
+//   GCP_KEY_RING_ID=<your-key-ring> GCP_CRYPTO_KEY_ID=<your-rsa-oaep-key> \
 //   GCP_CRYPTO_KEY_VERSION=<enabled version> npm run test:hsm:live
 //
 // What it proves: (A) the GcpHsmAdapter RSA-OAEP wrap -> in-HSM asymmetricDecrypt roundtrip on a
