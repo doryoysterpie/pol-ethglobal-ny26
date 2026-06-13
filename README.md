@@ -143,7 +143,10 @@ with an **RSA-3072 OAEP** HSM key — encrypting client-side with the key's publ
 and unwrapping only inside the HSM via `asymmetricDecrypt`, so the operator can hand a
 wrapped share to the institution but only the HSM can recover it. The wrapping key was
 provisioned at HSM protection level in `northamerica-northeast1` and verified with an
-end-to-end encrypt → HSM-decrypt roundtrip.
+end-to-end encrypt → HSM-decrypt roundtrip — reproducible via
+`USE_REAL_GCP_HSM=true npm run test:hsm:live`, which also exercises the Shamir 3-of-5
+reconstruction and 2-of-5 refusal through the live HSM. Committed transcript:
+[`docs/evidence/hsm-live-verification-2026-06-12.txt`](./docs/evidence/hsm-live-verification-2026-06-12.txt).
 
 > Note on algorithms: Google Cloud HSM does not support Ed25519 at HSM protection
 > level. Share-wrapping uses RSA-OAEP (the adapter's path here); where a hardware

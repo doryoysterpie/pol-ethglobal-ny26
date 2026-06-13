@@ -13,6 +13,7 @@
     "test": "node tests/test_shamirs_hello_world.mjs && node tests/test_hsm_adapter.mjs && node tests/test_pipeline.mjs",
     "test:shamir": "node tests/test_shamirs_hello_world.mjs",
     "test:hsm": "node tests/test_hsm_adapter.mjs",
+    "test:hsm:live": "node tests/test_hsm_live.mjs",
     "test:ceremony": "node tests/test_pipeline.mjs"
   },
   "dependencies": {

@@ -89,7 +89,9 @@ verified end-to-end:
   asymmetric *encrypt* API, so `encryptShare` wraps the share **client-side** with the
   public key and `decryptShare` unwraps it **inside the HSM** via `asymmetricDecrypt`;
   only the private-key decrypt happens in hardware, which is exactly the custody
-  property we want.
+  property we want. Reproduce this roundtrip and its Shamir 3-of-5 / 2-of-5
+  integration with `USE_REAL_GCP_HSM=true npm run test:hsm:live`; committed
+  transcript at `docs/evidence/hsm-live-verification-2026-06-12.txt`.
 - **`pol-lea-share-hsm`** — **secp256k1** (`EC_SIGN_SECP256K1_SHA256`, asymmetric
   *signing*) — verified by a sign→verify roundtrip. This is the key that established
   that **Ed25519 is not available at HSM protection level on GCP** (rejected at create)
