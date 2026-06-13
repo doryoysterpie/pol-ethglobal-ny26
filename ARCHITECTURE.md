@@ -81,19 +81,20 @@ small interface (`IHsmAdapter`: `encryptShare` / `decryptShare`):
   boundary. It is loaded only via dynamic import when `USE_REAL_GCP_HSM=true`, so
   the offline baseline never resolves `@google-cloud/kms`.
 
-Two keys were provisioned at HSM protection level in `northamerica-northeast1`, both
-verified end-to-end:
+Two keys were provisioned at HSM protection level (resource names elided here; the
+actual names are in the evidence transcript), both verified end-to-end:
 
-- **`pol-lea-share-encrypt-hsm`** — **RSA-3072 OAEP** (`rsa-decrypt-oaep-3072-sha256`,
-  asymmetric *decrypt*) — the key `GcpHsmAdapter` actually uses. KMS exposes no
-  asymmetric *encrypt* API, so `encryptShare` wraps the share **client-side** with the
-  public key and `decryptShare` unwraps it **inside the HSM** via `asymmetricDecrypt`;
-  only the private-key decrypt happens in hardware, which is exactly the custody
-  property we want.
-- **`pol-lea-share-hsm`** — **secp256k1** (`EC_SIGN_SECP256K1_SHA256`, asymmetric
-  *signing*) — verified by a sign→verify roundtrip. This is the key that established
-  that **Ed25519 is not available at HSM protection level on GCP** (rejected at create)
-  and that **secp256k1** (also Ethereum's curve) is the HSM-supported signing curve.
+- **The RSA-3072 OAEP key** (`rsa-decrypt-oaep-3072-sha256`, asymmetric *decrypt*) —
+  the key `GcpHsmAdapter` actually uses. KMS exposes no asymmetric *encrypt* API, so
+  `encryptShare` wraps the share **client-side** with the public key and `decryptShare`
+  unwraps it **inside the HSM** via `asymmetricDecrypt`; only the private-key decrypt
+  happens in hardware, which is exactly the custody property we want. Reproduce this
+  roundtrip and its Shamir 3-of-5 / 2-of-5 integration with `USE_REAL_GCP_HSM=true npm
+  run test:hsm:live`; committed transcript at `docs/evidence/hsm-live-verification-2026-06-12.txt`.
+- **A secp256k1 key** (`EC_SIGN_SECP256K1_SHA256`, asymmetric *signing*) — verified by
+  a sign→verify roundtrip. This is the key that established that **Ed25519 is not
+  available at HSM protection level on GCP** (rejected at create) and that **secp256k1**
+  (also Ethereum's curve) is the HSM-supported signing curve.
 
 Both are demonstration-scoped; the production signature scheme is governed separately
 (ADR-0003).

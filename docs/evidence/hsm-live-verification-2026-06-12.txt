@@ -1,0 +1,108 @@
+================================================================================
+LIVE GOOGLE CLOUD HSM VERIFICATION — pol-ethglobal-ny26
+Hackathon v0, unaudited. Reproducible evidence for the RSA-OAEP threshold-custody
+claim (README §7 / ARCHITECTURE §3).
+================================================================================
+
+This transcript is the artifact a reviewer reads when they cannot provision their
+own Cloud HSM. It records a real encrypt -> in-HSM asymmetricDecrypt roundtrip on
+an HSM-protected key, and that the unwrap composes with the real Shamir M-of-N
+floor. It contains resource names only — NO credentials, ADC contents, or key
+material (none of that is needed to trust or reproduce the result).
+
+WHAT THIS PROVES (and nothing more):
+  - The GcpHsmAdapter RSA-3072-OAEP wrap (client-side, public key) -> in-HSM
+    asymmetricDecrypt unwrap works against a real HSM-protected key version.
+  - That live unwrap composes with real Shamir 3-of-5 custody: a reconstruction
+    routing the LEA share through the HSM equals the synchronous master, and the
+    2-of-5 floor still refuses even when handed a genuinely HSM-unwrapped share.
+WHAT IT DOES NOT PROVE: production-readiness, audit, the production HSM vendor or
+signature scheme. The reconstruction-window residual (master briefly whole in
+process memory, then zeroed) still applies; eliminating it is future work
+(threshold ElGamal). See ARCHITECTURE.md §5.
+
+--------------------------------------------------------------------------------
+ENVIRONMENT
+--------------------------------------------------------------------------------
+Verification run : 2026-06-13T01:45Z (UTC)
+gcloud account   : ilbricconemarketing@gmail.com
+GCP project      : pol-attest-hackathon
+Key resource     : projects/pol-attest-hackathon/locations/northamerica-northeast1/
+                   keyRings/pol-attest-keyring/cryptoKeys/pol-lea-share-encrypt-hsm/
+                   cryptoKeyVersions/2
+Version state    : ENABLED
+Algorithm        : RSA_DECRYPT_OAEP_3072_SHA256
+Protection level : HSM
+Version created  : 2026-06-13T01:40:17Z (UTC)
+SDK              : @google-cloud/kms (installed locally; intentionally NOT a
+                   declared dependency — the offline baseline pulls no cloud dep)
+
+Note on key version: the originally-provisioned version 1 (2026-06-04) was
+destroyed post-demo to stop billing and is past the restore window. This
+verification was reproved on a newly-created version 2 (the single authorized
+spend). Version 2 is left ENABLED through the demo; teardown is a separate
+post-demo step.
+
+--------------------------------------------------------------------------------
+STEP 1 — ADC PRINCIPAL PERMISSION CHECK (free IAM read; ran BEFORE any spend)
+--------------------------------------------------------------------------------
+testIamPermissions over ADC on the cryptoKey returned:
+  ["cloudkms.cryptoKeyVersions.useToDecrypt","cloudkms.cryptoKeyVersions.viewPublicKey"]
+RESULT: OK — principal can fetch the public key (encryptShare) and decrypt
+in-HSM (decryptShare). Only after this passed was the key version created.
+
+--------------------------------------------------------------------------------
+STEP 2 — ONE NEW KEY VERSION (the single authorized billable action)
+--------------------------------------------------------------------------------
+NAME  STATE    ALGORITHM                     PROTECTION_LEVEL  GENERATE_TIME
+2     ENABLED  RSA_DECRYPT_OAEP_3072_SHA256  HSM               2026-06-13T01:40:17Z
+Versions on the key after creation (no extras, secp256k1 key untouched):
+  1  DESTROYED  2026-06-04T00:48:21Z
+  2  ENABLED    2026-06-13T01:40:17Z
+
+--------------------------------------------------------------------------------
+STEPS 3+4 — LIVE TEST OUTPUT  (USE_REAL_GCP_HSM=true npm run test:hsm:live)
+--------------------------------------------------------------------------------
+target: pol-attest-hackathon/northamerica-northeast1/pol-attest-keyring/pol-lea-share-encrypt-hsm v2
+== A. GcpHsmAdapter live RSA-OAEP roundtrip ==
+PASS  adapter advertises kind = gcp-kms
+PASS  ciphertext object has {adapter, ciphertext}
+PASS  ciphertext is not the plaintext (actually wrapped)
+PASS  decryptShare unwraps in-HSM back to the original share bytes
+
+== B. Threshold custody with live HSM unwrap ==
+PASS  hsmKind() is gcp-kms (real adapter active)
+PASS  3-of-5 reconstruct (LEA share via live HSM) == synchronous master
+PASS  reconstructed master is 32 bytes
+PASS  deriveStudentKeyViaHsm == synchronous derive (HSM in the key path)
+PASS  2-of-5 refused even with the live HSM-unwrapped LEA share (Shamir floor holds)
+
+RESULT: 9 passed, 0 failed
+
+--------------------------------------------------------------------------------
+GATING — the live test is excluded from the offline baseline
+--------------------------------------------------------------------------------
+With USE_REAL_GCP_HSM unset, `npm run test:hsm:live` skips and exits 0:
+  skipped: set USE_REAL_GCP_HSM=true to run the live GCP HSM test
+
+Offline baseline remains green and unchanged (no cloud dependency):
+  node tests/test_shamirs_hello_world.mjs ... RESULT: 10 passed, 0 failed
+  node tests/test_hsm_adapter.mjs         ... RESULT: 15 passed, 0 failed
+  node tests/test_pipeline.mjs            ... RESULT: 13 passed, 0 failed
+  forge test (PoLAuditRegistry + CommitmentAnchor) ... 10 passed, 0 failed
+  => 48 / 0 offline; the live test (9/0) runs only behind the flag.
+
+--------------------------------------------------------------------------------
+REPRODUCE
+--------------------------------------------------------------------------------
+  npm install @google-cloud/kms
+  # authenticate ADC as a principal with cryptoKeyVersions.useToDecrypt +
+  # viewPublicKey on the key (e.g. `gcloud auth application-default login`)
+  USE_REAL_GCP_HSM=true \
+  GCP_PROJECT_ID=pol-attest-hackathon \
+  GCP_LOCATION_ID=northamerica-northeast1 \
+  GCP_KEY_RING_ID=pol-attest-keyring \
+  GCP_CRYPTO_KEY_ID=pol-lea-share-encrypt-hsm \
+  GCP_CRYPTO_KEY_VERSION=<current enabled version> \
+  npm run test:hsm:live
+================================================================================
