@@ -63,7 +63,7 @@ cd contracts/besu && forge test
 
 ## Demo video
 
-- Link: _to be added at submission time_
+- Link: https://youtu.be/ZJCTBqnXMxI
 - Length: 3–5 minutes (problem → architecture → live ceremony → repo + bounty)
 
 ## Architecture
