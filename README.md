@@ -63,9 +63,9 @@ true by construction.
 
 > **Continuity note.** The threshold-custody foundation below — real Shamir M-of-N,
 > the crypto-shred ceremony, and the anchor contracts — **predates this event** (built
-> and green at 48/0 before June 12). The **in-window deliverable (June 12–14)** is the
-> live hardware-custody proof on a real Google Cloud HSM key, its committed
-> reproducible evidence, and this public release.
+> and green at 48/0 before June 12). The **in-window deliverable (June 12–14)** was the
+> hardware-custody proof demonstrated live on a real Google Cloud HSM key, its
+> committed reproducible evidence, and this public release.
 
 **Foundation (predates the event):**
 
@@ -82,8 +82,8 @@ true by construction.
 - **Live Google Cloud HSM custody proof** — the adapter's RSA-OAEP wrap → in-HSM
   `asymmetricDecrypt` roundtrip, reproduced on a real HSM-protected key and composed
   with the Shamir 3-of-5 / 2-of-5 floor.
-- **Committed reproducible evidence** — the gated `npm run test:hsm:live` (9/0) and the
-  transcript at [`docs/evidence/hsm-live-verification-2026-06-12.txt`](./docs/evidence/hsm-live-verification-2026-06-12.txt).
+- **Committed evidence** — the gated `npm run test:hsm:live` run (9/0), recorded in the
+  transcript at [`docs/evidence/hsm-live-verification-2026-06-12.txt`](./docs/evidence/hsm-live-verification-2026-06-12.txt). The demonstration key has since been torn down; to re-run, provision your own HSM key.
 - **This public open-source release.**
 
 ## 5. How to run the demo
@@ -159,10 +159,11 @@ with an **RSA-3072 OAEP** HSM key — encrypting client-side with the key's publ
 and unwrapping only inside the HSM via `asymmetricDecrypt`, so the operator can hand a
 wrapped share to the institution but only the HSM can recover it. The wrapping key was
 provisioned at HSM protection level and verified with an
-end-to-end encrypt → HSM-decrypt roundtrip — reproducible via
-`USE_REAL_GCP_HSM=true npm run test:hsm:live`, which also exercises the Shamir 3-of-5
-reconstruction and 2-of-5 refusal through the live HSM. Committed transcript:
-[`docs/evidence/hsm-live-verification-2026-06-12.txt`](./docs/evidence/hsm-live-verification-2026-06-12.txt).
+end-to-end encrypt → HSM-decrypt roundtrip that also exercised the Shamir 3-of-5
+reconstruction and 2-of-5 refusal in-HSM. The committed transcript
+([`docs/evidence/hsm-live-verification-2026-06-12.txt`](./docs/evidence/hsm-live-verification-2026-06-12.txt))
+is the record of that run; the demonstration key has since been torn down, so to
+reproduce, provision your own HSM key and run `USE_REAL_GCP_HSM=true npm run test:hsm:live`.
 
 > Note on algorithms: Google Cloud HSM does not support Ed25519 at HSM protection
 > level. Share-wrapping uses RSA-OAEP (the adapter's path here); where a hardware

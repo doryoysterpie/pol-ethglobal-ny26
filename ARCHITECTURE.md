@@ -88,9 +88,11 @@ actual names are in the evidence transcript), both verified end-to-end:
   the key `GcpHsmAdapter` actually uses. KMS exposes no asymmetric *encrypt* API, so
   `encryptShare` wraps the share **client-side** with the public key and `decryptShare`
   unwraps it **inside the HSM** via `asymmetricDecrypt`; only the private-key decrypt
-  happens in hardware, which is exactly the custody property we want. Reproduce this
-  roundtrip and its Shamir 3-of-5 / 2-of-5 integration with `USE_REAL_GCP_HSM=true npm
-  run test:hsm:live`; committed transcript at `docs/evidence/hsm-live-verification-2026-06-12.txt`.
+  happens in hardware, which is exactly the custody property we want. The committed
+  transcript (`docs/evidence/hsm-live-verification-2026-06-12.txt`) records this roundtrip
+  and its Shamir 3-of-5 / 2-of-5 integration; the demonstration key has since been torn
+  down, so to reproduce, provision your own HSM key and run `USE_REAL_GCP_HSM=true npm run
+  test:hsm:live`.
 - **A secp256k1 key** (`EC_SIGN_SECP256K1_SHA256`, asymmetric *signing*) — verified by
   a sign→verify roundtrip. This is the key that established that **Ed25519 is not
   available at HSM protection level on GCP** (rejected at create) and that **secp256k1**

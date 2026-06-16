@@ -22,9 +22,10 @@ requiring it to trust the operator's infrastructure with key material. The
 wraps the institutional share client-side with the key's public half and unwraps it
 inside the HSM via `asymmetricDecrypt`, so only the private-key decrypt happens in
 hardware. The integration was verified end-to-end against a real HSM-protected
-**RSA-3072 OAEP** key —
-reproducible via `USE_REAL_GCP_HSM=true npm run test:hsm:live`, with a committed
-transcript at [`docs/evidence/hsm-live-verification-2026-06-12.txt`](./docs/evidence/hsm-live-verification-2026-06-12.txt).
+**RSA-3072 OAEP** key; the committed transcript at
+[`docs/evidence/hsm-live-verification-2026-06-12.txt`](./docs/evidence/hsm-live-verification-2026-06-12.txt)
+is the record of that run. The demonstration key has since been torn down — to
+reproduce, provision your own HSM key and run `USE_REAL_GCP_HSM=true npm run test:hsm:live`.
 We are not pursuing other bounties.
 
 > Note on the algorithm: the HSM-backed **custody** share is wrapped with
